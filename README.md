@@ -247,7 +247,7 @@ esphome run devices/tuya-t3e/esphome.yaml
 
 ## Support
 
-- **Issues with Tuya T3E device** — Open an issue in this repository
+- **Issues with Tuya T3E device** — Open an issue on [GitHub](https://github.com/txptr/espcontrol-tuya-t3e)
 - **General EspControl questions** — See [main EspControl repo](https://github.com/jtenniswood/espcontrol)
 - **ESPHome support** — [ESPHome Discord](https://discord.gg/esphome)
 

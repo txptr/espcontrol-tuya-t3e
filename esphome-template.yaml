@@ -47,7 +47,7 @@ ap:
 
 # Load all device configuration from remote repository
 packages:
-  tuya_t3e: !include https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/espcontrol-tuya-t3e/main/devices/tuya-t3e/packages.yaml
+  tuya_t3e: !include https://raw.githubusercontent.com/txptr/espcontrol-tuya-t3e/main/devices/tuya-t3e/packages.yaml
 
 # ESPHome components (from espcontrol repository)
 external_components:
