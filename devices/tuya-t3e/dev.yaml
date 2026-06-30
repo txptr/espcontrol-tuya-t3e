@@ -1,0 +1,16 @@
+# Development configuration for local builds
+# Use with: esphome run devices/tuya-t3e/dev.yaml
+
+esphome:
+  name: tuya-t3e-dev
+  friendly_name: Tuya T3E Dev
+
+packages:
+  base: !include ./packages.yaml
+
+external_components:
+  - source:
+      type: local
+      path: ../../../espcontrol  # Adjust if building in separate repo
+    components: [espcontrol, web_server_idf, artwork_image]
+    refresh: 0s

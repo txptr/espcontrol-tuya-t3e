@@ -1,0 +1,13 @@
+EspControl
+Copyright © jtenniswood
+
+This software is licensed under the PolyForm Noncommercial License 1.0.0.
+See LICENSE file for details.
+
+This repository includes code and assets from:
+- EspControl (https://github.com/jtenniswood/espcontrol) - PolyForm Noncommercial License 1.0.0
+- ESPHome (https://github.com/esphome/esphome) - GPL-3.0
+- LVGL (https://github.com/lvgl/lvgl) - MIT License
+- Material Design Icons (https://materialdesignicons.com/) - Apache 2.0
+
+For full attribution and licenses, see each project's repository.

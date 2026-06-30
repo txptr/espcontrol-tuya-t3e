@@ -1,0 +1,88 @@
+{
+  "slug": "tuya-t3e",
+  "name": "Tuya T3E Smart Panel",
+  "description": "480x480 square display, ESP32-S3 based",
+  "baseDevice": "guition-esp32-s3-4848s040",
+  "slots": 9,
+  "public": {
+    "name": "Tuya T3E",
+    "screenSize": "4 inches",
+    "resolution": "480 x 480",
+    "orientation": "Square"
+  },
+  "layout": {
+    "cols": 3,
+    "rows": 3,
+    "firmwareGrid": "3x3"
+  },
+  "rotation": {
+    "enabled": true,
+    "options": [
+      "0",
+      "90",
+      "180",
+      "270"
+    ],
+    "displayOffset": 180,
+    "rotateWidthCompensation": true
+  },
+  "web": {
+    "dragMode": "swap",
+    "dragAnimation": true,
+    "screen": {
+      "width": "100%",
+      "aspect": "480/480"
+    },
+    "topbar": {
+      "height": 3.2,
+      "padding": "0.39cqw",
+      "fontSize": 1.95
+    },
+    "grid": {
+      "top": 4.4,
+      "compactTop": 0.49,
+      "left": 0.49,
+      "right": 0.49,
+      "bottom": 0.49,
+      "gap": 0.98,
+      "fr": "1fr"
+    },
+    "btn": {
+      "radius": 0.78,
+      "padding": 1.37,
+      "iconSize": 4.69,
+      "labelSize": 1.8,
+      "labelLines": 2,
+      "labelLinesDouble": 3
+    },
+    "emptyCell": {
+      "radius": 0.78
+    },
+    "sensorBadge": {
+      "top": 1,
+      "right": 1,
+      "fontSize": 1.6
+    },
+    "subpageBadge": {
+      "bottom": 1,
+      "right": 1,
+      "fontSize": 2
+    }
+  },
+  "firmware": {
+    "build": {
+      "chip": "esp32s3",
+      "flash": "16MB"
+    },
+    "fonts": {
+      "icon_main": "font_icon_main",
+      "text_title": "font_text_title",
+      "text_body": "font_text_body",
+      "number_value": "font_number_value",
+      "icon_status": "font_icon_status",
+      "cover_art_title": "font_cover_art_title",
+      "cover_art_artist": "font_cover_art_artist",
+      "cover_art_time": "font_cover_art_time"
+    }
+  }
+}

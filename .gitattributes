@@ -1,0 +1,23 @@
+# Auto-normalize line endings
+* text=auto
+
+# Binary files
+*.ttf binary
+*.bin binary
+*.zip binary
+*.png binary
+*.jpg binary
+*.gif binary
+
+# YAML
+*.yaml text
+*.yml text
+
+# Python
+*.py text
+
+# JavaScript
+*.js text
+
+# Markdown
+*.md text
