@@ -28,6 +28,12 @@ venv/
 .LSOverride
 *.swp
 
+# Security: secrets and credentials
+secrets.yaml
+secrets.yml
+*.key
+*.pem
+
 # Generated files (but keep template)
 docs/public/webserver/*/www.js
 
@@ -35,3 +41,7 @@ docs/public/webserver/*/www.js
 *.log
 node_modules/
 npm-debug.log
+
+# ESPHome compiled files
+.esphome/
+esphome/

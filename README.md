@@ -2,57 +2,98 @@
 
 480x480 square ESP32-S3 panel running EspControl.
 
-This is a **template repository** — a standalone device package for the EspControl smart home control system.
+This is a **standalone device template** for the EspControl smart home control system. No forking, no maintainer involvement — just clone and build!
 
-## Quick Start
+## Quick Start (ESPHome WiFi Flashing)
 
 ### Prerequisites
 
-- **ESPHome CLI** — [install guide](https://esphome.io/guides/installing_esphome.html)
-- **Python 3.8+** — usually included with ESPHome
-- **USB-C cable** — for flashing firmware to the device
-- **2.4 GHz WiFi** — for device connectivity
+- **Home Assistant** with ESPHome add-on (recommended) or **ESPHome CLI**
+- **WiFi credentials** for 2.4 GHz network
+- **GitHub account** (free tier works fine)
 
-### Build & Flash
+### Setup in 5 Steps
 
-#### 1. Clone this repository
+#### 1️⃣ Copy Configuration Template
 
+Copy the content of `esphome-template.yaml` to your ESPHome config:
+
+**If using ESPHome via Home Assistant:**
+- Open Home Assistant → Settings → Devices & Services → ESPHome
+- Click "+ Create New Device"
+- Paste the template content
+- Update `YOUR_GITHUB_USERNAME` to your GitHub username
+- Save as `tuya-t3e.yaml`
+
+**If using ESPHome CLI:**
 ```bash
-git clone https://github.com/YOUR_USERNAME/espcontrol-tuya-t3e
-cd espcontrol-tuya-t3e
+cp esphome-template.yaml ~/esphome/tuya-t3e.yaml
 ```
 
-#### 2. Generate the web UI bundle
+#### 2️⃣ Create Secrets File
 
-```bash
-python3 scripts/build_www.py
+Create `secrets.yaml` in your ESPHome config directory:
+
+```yaml
+wifi_ssid: "Your WiFi Network"
+wifi_password: "Your WiFi Password"
+api_encryption_key: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+ota_password: "your-ota-password"
 ```
 
-This creates `docs/public/webserver/tuya-t3e/www.js` — the interface users will interact with on their device.
+(See `secrets-template.yaml` for full template)
 
-#### 3. Connect your device via USB and flash
+#### 3️⃣ First Time: Flash via USB
 
+Connect device to computer via USB-C and flash:
+
+**Home Assistant ESPHome add-on:**
+- Click the three dots on your device
+- Select "Install" → "Plug into computer running the browser"
+- Follow the browser prompts to flash
+
+**ESPHome CLI:**
 ```bash
-esphome run devices/tuya-t3e/esphome.yaml
+esphome run tuya-t3e.yaml
 ```
 
-ESPHome will:
-- Compile the firmware
-- Detect your USB device
-- Flash the binary
-- Show you logs in real-time
+#### 4️⃣ Configure WiFi (On Device)
 
-Select your USB device when prompted (usually `/dev/ttyUSB0` on Linux or `COM*` on Windows).
+After first flash, device boots into setup screen:
+- Follow on-device WiFi setup screen
+- Enter your 2.4 GHz credentials
+- Device connects to WiFi
 
-#### 4. First Boot
+#### 5️⃣ All Future Updates: WiFi Only
 
-The device will boot into a setup screen:
+After first setup, everything is wireless:
 
-1. **WiFi Setup** — Enter your 2.4 GHz WiFi credentials
-2. **Home Assistant Setup** — Give permission for the device to control your entities
-3. **Configuration** — Choose which controls appear on the screen
+**Home Assistant ESPHome:**
+- Click "Install" → "Wirelessly"
+- Device flashes over WiFi in ~2 minutes
 
-After setup, the device will restart and show the main control grid.
+**ESPHome CLI:**
+```bash
+esphome run tuya-t3e.yaml
+```
+
+---
+
+## How It Works
+
+```
+Your ESPHome Config
+        ↓
+   tuya-t3e.yaml (includes packages.yaml from this repo)
+        ↓
+   ├─ Hardware config (device.yaml, fonts, display)
+   ├─ ESPHome components (from github.com/jtenniswood/espcontrol)
+   └─ Web UI (www.js built automatically via GitHub Actions)
+        ↓
+   Firmware compiles and flashes
+```
+
+**Key:** This repo provides everything except your WiFi credentials. When you update this repo, your devices automatically get the latest features and bug fixes.
 
 ---
 
@@ -60,157 +101,179 @@ After setup, the device will restart and show the main control grid.
 
 | Property | Value |
 |----------|-------|
-| **Display** | 480×480 square IPS TFT (ST7701S) |
-| **MCU** | ESP32-S3 (6-core, 16 MB flash) |
+| **Display** | 480×480 square IPS TFT (ST7701S RGB) |
+| **MCU** | ESP32-S3 (6-core, 240 MHz, 16 MB flash) |
 | **RAM** | 8 MB PSRAM |
-| **Touch Input** | GT911 capacitive touchscreen |
-| **Connectivity** | 2.4 GHz 802.11 b/g/n WiFi |
-| **Backlight** | PWM-controlled 3.3V LED (GPIO 2) |
-| **Grid Layout** | 3×3 buttons (9 slots) |
-| **Power** | USB-C (5V typical, requires ~2A) |
+| **Touch** | GT911 capacitive touchscreen |
+| **WiFi** | 802.11 b/g/n 2.4 GHz (no 5 GHz) |
+| **Backlight** | PWM dimmable (GPIO 2) |
+| **Grid** | 3×3 buttons (9 controllable slots) |
+| **Power** | USB-C 5V ~2A typical |
+| **Rotation** | Software rotatable: 0°, 90°, 180°, 270° |
 
 ---
 
-## Usage
+## After Setup: Configure Your Controls
 
-### Configure Controls from the Web UI
+Once device is added to Home Assistant:
 
-1. Open `http://<device-ip>` in your browser
-2. Drag buttons to rearrange them
-3. Click buttons to assign Home Assistant entities
-4. Choose icons, labels, and colors
-5. Click **Save** — configuration syncs to the device in seconds
+1. **Open web UI:** `http://<device-ip>` or Home Assistant → Devices → Your device
+2. **Drag to rearrange** buttons
+3. **Click buttons** to assign Home Assistant entities (lights, switches, sensors, etc.)
+4. **Save** — changes sync to device in seconds
 
-### Available Control Types
+### Supported Controls
 
 - **Lights** — brightness, color, color temperature
-- **Switches** — toggle on/off
-- **Fans** — speed control, direction
-- **Climate** — temperature, mode, fan speed
+- **Switches** — simple on/off
+- **Fans** — speed, direction, oscillation
+- **Climate** — temperature, mode, humidity
 - **Covers** — blinds, shutters, garage doors
-- **Media Players** — play/pause, volume, album art
+- **Media** — play/pause, volume, album art display
 - **Sensors** — temperature, humidity, battery, custom text
-- **Scenes & Scripts** — run automations with one tap
-- **Weather** — forecast, current conditions
-- **Clocks & Dates** — display time, date, world clock
-- **Alarms** — set alarms directly on device
-
-### Display Settings
-
-From the web UI, customize:
-
-- **Active Color** — button highlight color when pressed
-- **Rotation** — 0°, 90°, 180°, 270°
-- **Brightness Schedule** — dim at night, full brightness during day
-- **Idle Sleep** — turn off display when not in use
-- **Language** — English, German, French, Spanish (see [docs](https://jtenniswood.github.io/espcontrol/))
+- **Scenes & Scripts** — one-tap automations
+- **Weather** — forecasts, current conditions
+- **Time** — clocks, dates, timezones
+- **Alarms** — direct device control
 
 ---
 
 ## Customization
 
-### Modify Hardware Pins
+### Change Hardware Pins
 
-Edit `devices/tuya-t3e/device/device.yaml` to change GPIO assignments:
+Edit `devices/tuya-t3e/device/device.yaml`:
 
 ```yaml
 output:
   - platform: ledc
     id: backlight_pwm
-    pin: GPIO2           # Change to your backlight pin
-    frequency: 20kHz
+    pin: GPIO2  # ← Change pin here
 ```
 
-After changes, rebuild and flash:
+Rebuild and re-flash via WiFi.
 
-```bash
-esphome run devices/tuya-t3e/esphome.yaml
-```
+### Adjust Display Appearance
 
-### Adjust Display Parameters
-
-In `devices/tuya-t3e/packages.yaml`, modify substitutions like:
+In your `tuya-t3e.yaml`, add substitutions:
 
 ```yaml
 substitutions:
-  screen_width: "480"
-  screen_height: "480"
-  padding: 14px         # Space around cards
-  radius: 8px           # Button corner radius
+  name: "my-device"
+  padding: 14px        # Space around buttons
+  radius: 8px          # Corner radius
+  main_page_card_gap: "10"  # Button spacing
 ```
-
----
-
-## Troubleshooting
-
-### "No matching device found" during flash
-
-**Check:**
-- USB cable is plugged in (try a different cable)
-- Device is powered and switched on
-- Run `esphome logs devices/tuya-t3e/esphome.yaml` to check USB detection
-
-### WiFi connection fails
-
-**Check:**
-- Device is in WiFi setup screen
-- WiFi password is correct (case-sensitive)
-- Router broadcasts 2.4 GHz (not 5 GHz only)
-- Signal strength is good (move device closer if needed)
-
-### Web UI doesn't load at `http://device-ip`
-
-**Check:**
-- Device is on the same WiFi network
-- Find device IP: Open Home Assistant → Devices → EspControl
-- Try `http://espcontrol-tuya-t3e.local` instead of IP address
-
-### Buttons don't control devices
-
-**Check:**
-- Device is added to Home Assistant (should appear automatically after WiFi setup)
-- Home Assistant can reach the device (check integration logs)
-- Entities exist in Home Assistant (they should appear in the entity picker)
-
----
-
-## Documentation
-
-- **Main EspControl Docs** — [jtenniswood.github.io/espcontrol](https://jtenniswood.github.io/espcontrol/)
-- **FAQ** — [jtenniswood.github.io/espcontrol/reference/faq](https://jtenniswood.github.io/espcontrol/reference/faq)
-- **ESPHome Docs** — [esphome.io](https://esphome.io/)
 
 ---
 
 ## Updates
 
-### Keep EspControl Updated
+### Keep Your Device Updated
 
-When the main EspControl repository updates with new features or bug fixes, you can pull them into your device:
+When this repository updates with new features or bug fixes:
 
 ```bash
-# From the espcontrol-tuya-t3e directory:
-git pull origin main
+# For Home Assistant: Just re-flash wirelessly (click "Install" → "Wirelessly")
+# For CLI: esphome run tuya-t3e.yaml
+```
 
-# Rebuild if any espcontrol components changed:
+The device automatically fetches the latest `www.js` from GitHub Pages.
+
+### What Gets Updated?
+
+- ✅ Web UI features and bug fixes
+- ✅ Firmware improvements (display, controls, Home Assistant integration)
+- ✅ New control types and card options
+- ❌ Your WiFi settings or custom configurations (saved on device)
+
+---
+
+## Troubleshooting
+
+### First Flash: "No devices found"
+
+- Check USB cable (try different cable)
+- Try browser on different computer
+- On Linux: `ls /dev/ttyUSB*` should show your device
+
+### Device won't connect to WiFi
+
+- 2.4 GHz network required (5 GHz won't work)
+- Try moving closer to router
+- Reboot device (power cycle)
+- Check WiFi password (case-sensitive)
+
+### Web UI shows but buttons don't work
+
+- Device must be in same WiFi network as Home Assistant
+- Check if device is added to Home Assistant
+- Verify Home Assistant can reach the device IP
+
+### WiFi flashing says "Encryption required"
+
+Generate API encryption key:
+
+```bash
+esphome logs tuya-t3e.yaml
+```
+
+Copy the generated key into `secrets.yaml` under `api_encryption_key`.
+
+---
+
+## Building from Source (Advanced)
+
+If you want to build locally without ESPHome:
+
+```bash
+# Generate www.js
+python3 scripts/build_www.py
+
+# Then use esphome.yaml from devices/tuya-t3e/ instead of template
 esphome run devices/tuya-t3e/esphome.yaml
 ```
 
 ---
 
-## License
+## Documentation
 
-This device template is part of EspControl, licensed under the [PolyForm Noncommercial License 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0/).
-
-**In plain terms:** You can use, modify, and share this software for non-commercial purposes. Commercial use requires permission from the EspControl maintainer.
+- **EspControl Docs** — https://jtenniswood.github.io/espcontrol/
+- **ESPHome Docs** — https://esphome.io/
+- **Home Assistant Docs** — https://www.home-assistant.io/
+- **GitHub Actions Status** — https://github.com/YOUR_USERNAME/espcontrol-tuya-t3e/actions
 
 ---
 
-## Support & Feedback
+## Support
 
-- **Issues with the Tuya T3E device** — Open an issue in this repository
-- **Issues with EspControl features** — See [main EspControl repository](https://github.com/jtenniswood/espcontrol)
-- **ESPHome questions** — [ESPHome Discord](https://discord.gg/esphome)
+- **Issues with Tuya T3E device** — Open an issue in this repository
+- **General EspControl questions** — See [main EspControl repo](https://github.com/jtenniswood/espcontrol)
+- **ESPHome support** — [ESPHome Discord](https://discord.gg/esphome)
+
+---
+
+## License
+
+Licensed under **PolyForm Noncommercial License 1.0.0** (same as EspControl).
+
+**Plain English:** You can use, modify, and share for non-commercial purposes. Commercial use requires permission from the EspControl maintainer.
+
+See [LICENSE](LICENSE) file for full terms.
+
+---
+
+## How This Compares to Forking
+
+| | Your Repo | Forked espcontrol |
+|---|-----------|-------------------|
+| **Setup** | 5 minutes | Manual merges, keep in sync |
+| **Updates** | Automatic (GitHub Actions) | Manual git pulls |
+| **Maintenance** | Zero from maintainer | Burden on maintainer |
+| **Hardware variations** | Easy (just change device.yaml) | Needs permission to add |
+| **www.js** | Auto-built on GitHub | Manually generated |
+
+This template approach means the EspControl maintainer can stay focused on the core project, while you own and maintain your device variant. Win-win! 🎉
 
 ---
 
@@ -219,3 +282,4 @@ This device template is part of EspControl, licensed under the [PolyForm Noncomm
 - **EspControl** — [jtenniswood/espcontrol](https://github.com/jtenniswood/espcontrol)
 - **ESPHome** — [esphome/esphome](https://github.com/esphome/esphome)
 - **LVGL** — [lvgl/lvgl](https://github.com/lvgl/lvgl)
+- **Material Design Icons** — [materialdesignicons.com](https://materialdesignicons.com/)
